@@ -1,0 +1,6 @@
+# 自动检查和录制动图时生成的临时文件
+.audit-artifacts/
+.demo-artifacts/
+# 发布用的压缩包
+dist/
+node_modules/

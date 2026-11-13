@@ -1,0 +1,18 @@
+{
+  "extName": {
+    "message": "Repo Grouping for GitHub – 把侧边栏仓库整理成分组",
+    "description": "商店里显示的完整名称（最多 75 个字符）。"
+  },
+  "extShortName": {
+    "message": "Repo Grouping",
+    "description": "空间不足时显示的短名。"
+  },
+  "extDescription": {
+    "message": "把 GitHub 首页侧边栏里的仓库整理成分组。拖拽归类，不需要登录、不要 token，数据只存本机。",
+    "description": "商店摘要（最多 132 个字符）。"
+  },
+  "actionTitle": {
+    "message": "Repo Grouping 设置",
+    "description": "工具栏按钮的提示文字。"
+  }
+}

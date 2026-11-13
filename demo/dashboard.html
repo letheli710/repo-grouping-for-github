@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- 录制演示用的本地页面：仿照 GitHub 首页的布局和侧边栏结构，仓库和用户都是虚构的。
+     侧边栏的选择器（nav[data-testid="dashboard-repositories"] 等）和真实页面一致，扩展会正常接管。 -->
+<meta name="user-login" content="alex-dev">
+<title>Dashboard</title>
+<style>
+  :root {
+    --fgColor-default: #1f2328; --fgColor-muted: #59636e; --fgColor-accent: #0969da;
+    --fgColor-success: #1a7f37; --fgColor-attention: #9a6700; --fgColor-severe: #bc4c00;
+    --fgColor-danger: #d1242f; --fgColor-done: #8250df; --fgColor-sponsors: #bf3989;
+    --bgColor-default: #ffffff; --bgColor-muted: #f6f8fa; --bgColor-neutral-muted: #818b981f;
+    --bgColor-accent-muted: #ddf4ff; --borderColor-default: #d1d9e0; --borderColor-muted: #d1d9e0b3;
+    --overlay-bgColor: #ffffff; --shadow-floating-small: 0 0 0 1px #d1d9e080, 0 6px 12px -3px #25292e0a, 0 6px 18px 0 #25292e1f;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+    color: var(--fgColor-default); background: var(--bgColor-muted);
+  }
+  header {
+    display: flex; align-items: center; gap: 12px; height: 56px; padding: 0 16px;
+    background: var(--bgColor-muted); border-bottom: 1px solid var(--borderColor-default);
+  }
+  .hb { width: 32px; height: 32px; border: 1px solid var(--borderColor-default); border-radius: 6px; display: grid; place-items: center; }
+  .hb i { display: block; width: 14px; height: 2px; background: var(--fgColor-muted); box-shadow: 0 -4px 0 var(--fgColor-muted), 0 4px 0 var(--fgColor-muted); }
+  .logo { width: 32px; height: 32px; border-radius: 50%; background: var(--fgColor-default); }
+  .title { font-weight: 600; }
+  .search { margin-left: auto; width: 280px; height: 32px; border: 1px solid var(--borderColor-default); border-radius: 6px; background: var(--bgColor-default); color: var(--fgColor-muted); font-size: 13px; display: flex; align-items: center; padding: 0 10px; }
+  .me { width: 28px; height: 28px; border-radius: 50%; background: #2da44e; }
+  .layout { display: flex; height: calc(100% - 56px); }
+  aside { width: 335px; flex: none; overflow-y: auto; background: var(--bgColor-default); border-right: 1px solid var(--borderColor-default); padding: 12px 0; }
+  .px-2 { padding: 0 8px; }
+  .navlist { list-style: none; margin: 0 0 8px; padding: 0 8px; }
+  .navlist a { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 6px; color: inherit; text-decoration: none; }
+  .navlist a.on { background: var(--bgColor-neutral-muted); font-weight: 600; }
+  .navlist .dot { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--fgColor-muted); }
+  hr { border: 0; border-top: 1px solid var(--borderColor-muted); margin: 8px 16px 12px; }
+  /* 原生 Top repositories 列表（扩展会把它隐藏，换成分组视图） */
+  nav[data-testid="dashboard-repositories"] h3 { margin: 0; padding: 6px 8px; font-size: 12px; color: var(--fgColor-muted); }
+  nav[data-testid="dashboard-repositories"] a { display: flex; align-items: center; gap: 8px; margin: 0 8px; padding: 6px 8px; border-radius: 6px; color: inherit; text-decoration: none; }
+  nav[data-testid="dashboard-repositories"] img { width: 16px; height: 16px; border-radius: 50%; }
+  nav[data-testid="dashboard-repositories"] button { all: unset; margin: 4px 16px; font-size: 12px; color: var(--fgColor-muted); cursor: pointer; }
+  main { flex: 1; overflow: hidden; padding: 24px 32px; }
+  main h2 { margin: 0 0 16px; font-size: 20px; }
+  .card { background: var(--bgColor-default); border: 1px solid var(--borderColor-default); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; max-width: 640px; }
+  .card .k { font-size: 12px; color: var(--fgColor-muted); }
+  .card .v { margin-top: 2px; font-weight: 600; }
+  .bar { height: 8px; border-radius: 4px; background: var(--bgColor-neutral-muted); margin-top: 10px; }
+  .bar.s { width: 60%; }
+
+  /* 录屏用的鼠标指针（无头浏览器录像里没有系统指针） */
+  #cursor { position: fixed; left: 0; top: 0; z-index: 2147483647; pointer-events: none; transform: translate(-2px, -1px); }
+  #cursor svg { display: block; filter: drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
+  #ghost { position: fixed; z-index: 2147483646; pointer-events: none; display: none; padding: 4px 10px; border-radius: 6px;
+    background: var(--bgColor-default); border: 1px solid var(--borderColor-default); box-shadow: var(--shadow-floating-small); font-size: 13px; transform: translate(14px, 10px); }
+  .ripple { position: fixed; z-index: 2147483645; width: 28px; height: 28px; margin: -14px 0 0 -14px; border-radius: 50%; pointer-events: none;
+    background: rgba(9, 105, 218, .25); animation: rip .45s ease-out forwards; }
+  @keyframes rip { from { transform: scale(.3); opacity: 1; } to { transform: scale(1.4); opacity: 0; } }
+</style>
+</head>
+<body>
+  <header>
+    <div class="hb"><i></i></div>
+    <div class="logo"></div>
+    <span class="title">Dashboard</span>
+    <div class="search">Type / to search</div>
+    <div class="me"></div>
+  </header>
+  <div class="layout">
+    <aside>
+      <ul class="navlist">
+        <li><a class="on" href="#"><span class="dot"></span>Home</a></li>
+        <li><a href="#"><span class="dot"></span>Feed</a></li>
+      </ul>
+      <hr>
+      <div class="px-2">
+        <react-partial partial-name="dashboard-repositories">
+          <div>
+            <nav data-testid="dashboard-repositories">
+              <h3>Top repositories</h3>
+              <div id="items"></div>
+              <button id="more" type="button">Show more</button>
+            </nav>
+          </div>
+        </react-partial>
+      </div>
+    </aside>
+    <main>
+      <h2 id="hello">Good morning, alex-dev!</h2>
+      <div class="card"><div class="k">Pull request · alex-dev/web-app</div><div class="v">Add dark mode toggle to settings page</div><div class="bar"></div><div class="bar s"></div></div>
+      <div class="card"><div class="k">Pull request · acme-corp/billing-service</div><div class="v">Retry failed webhooks with exponential backoff</div><div class="bar"></div><div class="bar s"></div></div>
+      <div class="card"><div class="k">Issue · alex-dev/api-server</div><div class="v">Rate limiter returns 500 instead of 429</div><div class="bar"></div><div class="bar s"></div></div>
+      <div class="card"><div class="k">Release · alex-dev/cli-tool</div><div class="v">v2.3.0</div><div class="bar"></div><div class="bar s"></div></div>
+    </main>
+  </div>
+
+  <div id="cursor"><svg width="20" height="24" viewBox="0 0 20 24"><path d="M2 2 L2 19 L6.5 15 L9.5 22 L12.5 20.8 L9.6 14 L16 14 Z" fill="#fff" stroke="#1f2328" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+  <div id="ghost"></div>
+
+<script>
+  // 虚构的仓库列表：前 10 个先显示，点 Show more 再加载剩下的（和真实页面一样）
+  const REPOS = [
+    'alex-dev/web-app', 'acme-corp/billing-service', 'alex-dev/infra-terraform', 'alex-dev/api-server',
+    'alex-dev/k8s-manifests', 'alex-dev/blog', 'acme-corp/admin-portal', 'alex-dev/ml-experiments',
+    'alex-dev/cli-tool', 'alex-dev/mobile-client', 'alex-dev/portfolio', 'alex-dev/design-system',
+    'alex-dev/dotfiles', 'alex-dev/data-pipeline',
+  ];
+  const AVATAR = { 'alex-dev': 'https://avatars.githubusercontent.com/u/1001?v=4', 'acme-corp': 'https://avatars.githubusercontent.com/u/2002?v=4' };
+  let shown = 0;
+  function addBatch(n) {
+    const box = document.getElementById('items');
+    for (let i = 0; i < n && shown < REPOS.length; i++, shown++) {
+      const full = REPOS[shown];
+      const a = document.createElement('a');
+      a.setAttribute('data-testid', 'dynamic-side-panel-items-item');
+      a.href = '/' + full;
+      const img = document.createElement('img');
+      img.src = AVATAR[full.split('/')[0]];
+      a.append(img, full);
+      box.append(a);
+    }
+    document.getElementById('more').hidden = shown >= REPOS.length;
+  }
+  document.getElementById('more').addEventListener('click', () => setTimeout(() => addBatch(10), 150));
+  addBatch(10);
+
+  // 录屏用：自绘鼠标指针、点击波纹、拖拽时跟随指针的仓库名
+  const cursor = document.getElementById('cursor');
+  const ghost = document.getElementById('ghost');
+  const move = (x, y) => {
+    cursor.style.left = x + 'px'; cursor.style.top = y + 'px';
+    ghost.style.left = x + 'px'; ghost.style.top = y + 'px';
+  };
+  document.addEventListener('mousemove', (e) => move(e.clientX, e.clientY), true);
+  document.addEventListener('dragover', (e) => move(e.clientX, e.clientY), true);
+  document.addEventListener('drag', (e) => { if (e.clientX || e.clientY) move(e.clientX, e.clientY); }, true);
+  document.addEventListener('mousedown', (e) => {
+    const r = document.createElement('div');
+    r.className = 'ripple'; r.style.left = e.clientX + 'px'; r.style.top = e.clientY + 'px';
+    document.body.append(r); setTimeout(() => r.remove(), 500);
+  }, true);
+  // 用冒泡阶段：扩展在自己的 dragstart 里写入仓库名之后，这里才读得到
+  document.addEventListener('dragstart', (e) => {
+    const name = e.dataTransfer?.getData('text/plain') || '';
+    if (!name.includes('/')) return;
+    ghost.textContent = name.split('/')[1];
+    ghost.style.display = 'block';
+  });
+  const hideGhost = () => { ghost.style.display = 'none'; };
+  document.addEventListener('dragend', hideGhost, true);
+  document.addEventListener('drop', hideGhost, true);
+  move(-50, -50);
+</script>
+</body>
+</html>
