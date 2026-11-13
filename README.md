@@ -135,9 +135,13 @@ extension/        the extension itself (Manifest V3, plain JavaScript, no depend
   _locales/       store name and description (en, zh_CN)
 scripts/
   audit-extension.cjs   automated checks in a temporary headless Chrome
-  record-demo.cjs       records docs/images/demo.gif from demo/dashboard.html
+  record-demo.cjs       records docs/images/demo.gif and screenshots with the real extension
+  snapshot-dashboard.js run in your browser console on github.com/dashboard to make a 1:1 page copy
+                        with your account, repos and PRs replaced by fictional ones (kept out of git)
   build-icons.cjs       renders extension/icons/*.png
-demo/dashboard.html     local mock of the GitHub home page (fictional repos) used by the demo
+demo/
+  dashboard.html        hand-made fallback mock of the GitHub home page (fictional repos)
+  cursor-overlay.js     draws the mouse pointer in recordings
 docs/                   market research, design notes and security audit (Chinese)
 ```
 

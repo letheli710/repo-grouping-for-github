@@ -137,9 +137,13 @@ extension/        扩展本体（Manifest V3，原生 JavaScript，无依赖，�
   _locales/       商店名称和描述（en、zh_CN）
 scripts/
   audit-extension.cjs   在临时无头 Chrome 里跑自动检查
-  record-demo.cjs       用 demo/dashboard.html 录制 docs/images/demo.gif
+  record-demo.cjs       加载真实扩展，录制 docs/images/demo.gif 和截图
+  snapshot-dashboard.js 在 github.com/dashboard 的浏览器控制台运行，生成 1:1 页面副本，
+                        账号、仓库和 PR 都会换成虚构内容（副本不进 git）
   build-icons.cjs       生成 extension/icons/*.png
-demo/dashboard.html     演示用的本地仿 GitHub 首页（仓库都是虚构的）
+demo/
+  dashboard.html        手写的备用仿 GitHub 首页（仓库都是虚构的）
+  cursor-overlay.js     在录像里画出鼠标指针
 docs/                   市场调研、产品设计和安全审查（中文）
 ```
 

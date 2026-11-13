@@ -1,6 +1,11 @@
 // 录制 README 用的演示动图和截图。
-// 在临时的无头 Chrome 里加载真实扩展，打开本地仿 GitHub 首页（demo/dashboard.html），
-// 所有请求都在本地拦截处理，不访问真实 GitHub、不用任何真实账号。
+// 在临时的无头 Chrome 里加载真实扩展，打开本地的仿 GitHub 首页，不用任何真实账号。
+//
+// 演示页有两种来源：
+//   1. .demo-artifacts/github-dashboard.html（优先）：从真实 GitHub 首页复制、并把账号、仓库、PR、
+//      头像全部换成虚构内容的副本，外观 1:1。它含 GitHub 的页面代码，所以不提交到仓库。
+//      样式从 GitHub 公开的静态资源服务器 github.githubassets.com 加载，这是唯一放行的网络请求。
+//   2. demo/dashboard.html（备用）：手写的近似页面，完全离线。
 //
 // 用法：NODE_PATH=<含 playwright 的 node_modules> node scripts/record-demo.cjs [en|zh]
 // 需要 ffmpeg 在 PATH 里。输出到 docs/images/。
@@ -15,9 +20,11 @@ const root = path.resolve(__dirname, '..');
 const work = path.join(root, '.demo-artifacts');
 const outDir = path.join(root, 'docs', 'images');
 const suffix = LANG === 'zh' ? '.zh-CN' : '';
-const W = 1000;
-const H = 720;
-const CROP_W = 660;
+const SNAPSHOT = path.join(work, 'github-dashboard.html');
+const useSnapshot = fss.existsSync(SNAPSHOT);
+const W = useSnapshot ? 1280 : 1000;
+const H = useSnapshot ? 800 : 720;
+const CROP = useSnapshot ? { x: 0, y: 0, w: 900, h: 800 } : { x: 0, y: 0, w: 660, h: 720 };
 
 const L = {
   en: { work: 'Work · Acme', side: 'Side projects', infra: 'Infra', band: 'Title band', bold: 'Wings', card: 'Card (default)' },
@@ -54,11 +61,18 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     locale: LANG === 'zh' ? 'zh-CN' : 'en-US',
   });
   try {
-    const demoHtml = await fs.readFile(path.join(root, 'demo', 'dashboard.html'), 'utf8');
+    const demoHtml = await fs.readFile(useSnapshot ? SNAPSHOT : path.join(root, 'demo', 'dashboard.html'), 'utf8');
+    console.log('demo page:', useSnapshot ? '1:1 snapshot' : 'demo/dashboard.html');
+    await ctx.addInitScript({ path: path.join(root, 'demo', 'cursor-overlay.js') });
     await ctx.route(/^https?:/, async (route) => {
-      const url = new URL(route.request().url());
-      if (url.hostname === 'github.com' && route.request().isNavigationRequest()) {
+      const req = route.request();
+      const url = new URL(req.url());
+      if (url.hostname === 'github.com' && req.isNavigationRequest()) {
         return route.fulfill({ contentType: 'text/html', body: demoHtml });
+      }
+      // 只放行 GitHub 公开静态资源（样式、字体、图标）的 GET 请求，不带任何账号信息
+      if (useSnapshot && url.hostname === 'github.githubassets.com' && req.method() === 'GET') {
+        return route.continue();
       }
       if (url.hostname === 'avatars.githubusercontent.com') {
         const acme = url.pathname.includes('2002');
@@ -100,8 +114,9 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
     // ---------- 动作 ----------
     const $ = (sel) => page.locator('#ghg-root ' + sel);
-    let cx = W / 2;
-    let cy = H / 2;
+    // 起始位置放在问候语旁边，避免一开始就悬停在某个按钮上
+    let cx = Math.round(W * 0.45);
+    let cy = 110;
     async function glide(x, y, steps = 18) {
       for (let i = 1; i <= steps; i++) {
         const t = i / steps;
@@ -190,7 +205,8 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
       await setup.evaluate((s) => chrome.storage.local.set({ 'ghg:settings': { style: s, showNative: false } }), style);
       await sleep(400);
       const file = path.join(work, `style-${style}${suffix}.png`);
-      await page.screenshot({ path: file, clip: { x: 0, y: 56, width: 335, height: 600 } });
+      const aside = await page.locator('aside').first().boundingBox();
+      await page.screenshot({ path: file, clip: { x: aside.x, y: aside.y, width: aside.width, height: Math.min(600, H - aside.y) } });
       shots.push({ file, label });
     }
     await setup.evaluate(() => chrome.storage.local.set({ 'ghg:settings': { style: 'card', showNative: false } }));
@@ -203,11 +219,12 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     const imgs = await Promise.all(shots.map(async (s) => ({ label: s.label, data: (await fs.readFile(s.file)).toString('base64') })));
     await cmp.setContent(`<html><body style="margin:0;padding:0;background:#f6f8fa;font:600 15px -apple-system,Segoe UI,Arial,sans-serif;color:#1f2328">
       <div style="display:flex;gap:24px;padding:20px 24px;background:#f6f8fa">${imgs.map((i) => `<figure style="margin:0"><figcaption style="margin:0 0 10px">${i.label}</figcaption>
-      <img src="data:image/png;base64,${i.data}" style="display:block;width:335px;border:1px solid #d1d9e0;border-radius:10px"></figure>`).join('')}</div></body></html>`);
+      <img src="data:image/png;base64,${i.data}" style="display:block;width:336px;border:1px solid #d1d9e0;border-radius:10px"></figure>`).join('')}</div></body></html>`);
     await cmp.locator('body > div').screenshot({ path: path.join(outDir, `styles${suffix}.png`) });
 
     // 商店截图 1280×800（只在英文版生成）
     if (LANG === 'en') {
+      await page.evaluate(() => document.getElementById("demo-cursor")?.remove());
       await page.setViewportSize({ width: 1280, height: 800 });
       await sleep(400);
       await page.screenshot({ path: path.join(outDir, 'store-screenshot-1280x800.png') });
@@ -230,7 +247,7 @@ duration ${Math.max(0.01, next - fr.t).toFixed(3)}
     fss.writeFileSync(path.join(frameDir, 'list.txt'), list);
     const gif = path.join(outDir, `demo${suffix}.gif`);
     execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', path.join(frameDir, 'list.txt'),
-      '-vf', `crop=${CROP_W}:${H}:0:0,fps=12,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle`,
+      '-vf', `crop=${CROP.w}:${CROP.h}:${CROP.x}:${CROP.y},fps=12,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle`,
       '-loop', '0', gif], { stdio: 'inherit' });
     console.log('gif', gif, (fss.statSync(gif).size / 1024 / 1024).toFixed(2) + ' MB');
   } finally {
