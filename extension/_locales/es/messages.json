@@ -1,0 +1,18 @@
+{
+  "extName": {
+    "message": "Repo Grouping for GitHub – Organiza repos en carpetas en la barra lateral",
+    "description": "Full extension name shown in the Chrome Web Store (max 75 characters)."
+  },
+  "extShortName": {
+    "message": "Repo Grouping",
+    "description": "Short name for tight spaces."
+  },
+  "extDescription": {
+    "message": "Organiza los repositorios de la barra lateral de GitHub en carpetas y grupos. Arrastrar y soltar, sin login ni token, todo local.",
+    "description": "Store summary (max 132 characters)."
+  },
+  "actionTitle": {
+    "message": "Repo Grouping – ajustes",
+    "description": "Tooltip of the toolbar button."
+  }
+}

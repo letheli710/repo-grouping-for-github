@@ -1,0 +1,18 @@
+{
+  "extName": {
+    "message": "Repo Grouping for GitHub – Папки для репозиториев в боковой панели",
+    "description": "Full extension name shown in the Chrome Web Store (max 75 characters)."
+  },
+  "extShortName": {
+    "message": "Repo Grouping",
+    "description": "Short name for tight spaces."
+  },
+  "extDescription": {
+    "message": "Раскладывайте репозитории в боковой панели GitHub по папкам и группам. Перетаскивание, без входа и токена, данные хранятся локально.",
+    "description": "Store summary (max 132 characters)."
+  },
+  "actionTitle": {
+    "message": "Repo Grouping – настройки",
+    "description": "Tooltip of the toolbar button."
+  }
+}

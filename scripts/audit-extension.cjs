@@ -377,7 +377,7 @@ function info(name, observed) {
     for (const f of ['manifest.json', 'content.js', 'popup.html', 'popup.js']) {
       hashes[f] = crypto.createHash('sha256').update(await fs.readFile(path.join(root, 'extension', f))).digest('hex');
     }
-    const output = { date: '2026-11-12', browser: version, extensionVersion: '1.0.0', extensionId, hashes,
+    const output = { date: '2026-11-12', browser: version, extensionVersion: '1.1.0', extensionId, hashes,
       method: 'Real MV3 extension in isolated temporary headless Chrome; all HTTP(S) fulfilled locally; synthetic GitHub dashboard DOM; native tabs.setZoom.',
       limitation: 'Does not assert current live GitHub DOM, responsive breakpoints, account enforcement, or real multi-page Show more behavior.',
       results, errors, matrix, requests };

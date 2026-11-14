@@ -32,7 +32,8 @@
   const STYLES = ['card', 'band', 'bold'];
   const DEFAULT_STYLE = 'card';
 
-  // ---------- 界面文字：中文浏览器显示中文，其他一律英文 ----------
+  // ---------- 界面文字：跟随浏览器语言，支持 10 种，其他语言显示英文 ----------
+  // 缺失的条目会回退到英文（见下方 pickLang / T 的合并）。改动时请同步 popup.js 和 _locales/。
   const I18N = {
     en: {
       newGroup: 'New group', settings: 'Settings',
@@ -60,8 +61,132 @@
       styles: { card: '卡片（默认）', band: '标题色带', bold: '长两翼' },
       colors: { accent: '蓝', success: '绿', attention: '黄', severe: '橙', danger: '红', done: '紫', sponsors: '粉' },
     },
+    zh_TW: {
+      newGroup: '新增群組', settings: '設定',
+      unsaved: '有變更尚未儲存，重新整理頁面就會遺失。', retry: '重試', discard: '捨棄這些變更',
+      expand: '點擊展開', collapse: '點擊收合', groupOptions: '群組選項',
+      dropHere: '把儲存庫拖到這裡', ungrouped: '未分組', loadMore: '載入更多儲存庫',
+      repoOptions: '移到群組', groupName: '群組名稱', moveTo: '移到群組',
+      newGroupMenu: '＋ 新增群組…', removeFrom: '移出群組',
+      rename: '重新命名', color: '顏色', noColor: '無顏色', deleteGroup: '刪除群組（儲存庫回到未分組）',
+      style: '群組樣式', showNative: '同時顯示 GitHub 原生列表', dropNew: '拖到這裡建立新群組',
+      defaultName: '新群組',
+      styles: { card: '卡片（預設）', band: '標題色帶', bold: '長兩翼' },
+      colors: { accent: '藍', success: '綠', attention: '黃', severe: '橙', danger: '紅', done: '紫', sponsors: '粉' },
+    },
+    ja: {
+      newGroup: '新しいグループ', settings: '設定',
+      unsaved: '保存されていない変更があります。再読み込みすると失われます。', retry: '再試行', discard: '変更を破棄',
+      expand: 'クリックで展開', collapse: 'クリックで折りたたむ', groupOptions: 'グループのオプション',
+      dropHere: 'ここにリポジトリをドラッグ', ungrouped: '未分類', loadMore: 'さらにリポジトリを読み込む',
+      repoOptions: 'グループに移動', groupName: 'グループ名', moveTo: 'グループに移動',
+      newGroupMenu: '＋ 新しいグループ…', removeFrom: 'グループから外す',
+      rename: '名前を変更', color: '色', noColor: '色なし', deleteGroup: 'グループを削除（リポジトリは未分類に戻ります）',
+      style: 'グループのスタイル', showNative: 'GitHub の元のリストも表示', dropNew: 'ここにドロップして新しいグループを作成',
+      defaultName: '新しいグループ',
+      styles: { card: 'カード（デフォルト）', band: 'タイトル帯', bold: 'ウイング' },
+      colors: { accent: '青', success: '緑', attention: '黄', severe: '橙', danger: '赤', done: '紫', sponsors: 'ピンク' },
+    },
+    ko: {
+      newGroup: '새 그룹', settings: '설정',
+      unsaved: '저장되지 않은 변경 사항이 있습니다. 새로고침하면 사라집니다.', retry: '다시 시도', discard: '변경 사항 버리기',
+      expand: '클릭하여 펼치기', collapse: '클릭하여 접기', groupOptions: '그룹 옵션',
+      dropHere: '여기로 저장소를 드래그하세요', ungrouped: '그룹 없음', loadMore: '저장소 더 불러오기',
+      repoOptions: '그룹으로 이동', groupName: '그룹 이름', moveTo: '그룹으로 이동',
+      newGroupMenu: '+ 새 그룹…', removeFrom: '그룹에서 제거',
+      rename: '이름 바꾸기', color: '색상', noColor: '색상 없음', deleteGroup: '그룹 삭제 (저장소는 그룹 없음으로 돌아갑니다)',
+      style: '그룹 스타일', showNative: 'GitHub 원래 목록도 표시', dropNew: '여기에 놓아 새 그룹 만들기',
+      defaultName: '새 그룹',
+      styles: { card: '카드 (기본)', band: '제목 띠', bold: '날개' },
+      colors: { accent: '파랑', success: '초록', attention: '노랑', severe: '주황', danger: '빨강', done: '보라', sponsors: '분홍' },
+    },
+    es: {
+      newGroup: 'Nuevo grupo', settings: 'Ajustes',
+      unsaved: 'Algunos cambios no se guardaron y se perderán si recargas la página.', retry: 'Reintentar', discard: 'Descartar cambios',
+      expand: 'Clic para expandir', collapse: 'Clic para contraer', groupOptions: 'Opciones del grupo',
+      dropHere: 'Arrastra repositorios aquí', ungrouped: 'Sin grupo', loadMore: 'Cargar más repositorios',
+      repoOptions: 'Mover a un grupo', groupName: 'Nombre del grupo', moveTo: 'Mover a un grupo',
+      newGroupMenu: '+ Nuevo grupo…', removeFrom: 'Quitar del grupo',
+      rename: 'Renombrar', color: 'Color', noColor: 'Sin color', deleteGroup: 'Eliminar grupo (los repositorios vuelven a Sin grupo)',
+      style: 'Estilo de los grupos', showNative: 'Mostrar también la lista original de GitHub', dropNew: 'Suelta aquí para crear un grupo',
+      defaultName: 'Nuevo grupo',
+      styles: { card: 'Tarjeta (predeterminado)', band: 'Banda de título', bold: 'Alas' },
+      colors: { accent: 'Azul', success: 'Verde', attention: 'Amarillo', severe: 'Naranja', danger: 'Rojo', done: 'Morado', sponsors: 'Rosa' },
+    },
+    fr: {
+      newGroup: 'Nouveau groupe', settings: 'Paramètres',
+      unsaved: 'Certaines modifications n’ont pas été enregistrées et seront perdues au rechargement.', retry: 'Réessayer', discard: 'Annuler les modifications',
+      expand: 'Cliquer pour développer', collapse: 'Cliquer pour réduire', groupOptions: 'Options du groupe',
+      dropHere: 'Glissez des dépôts ici', ungrouped: 'Sans groupe', loadMore: 'Charger plus de dépôts',
+      repoOptions: 'Déplacer vers un groupe', groupName: 'Nom du groupe', moveTo: 'Déplacer vers un groupe',
+      newGroupMenu: '+ Nouveau groupe…', removeFrom: 'Retirer du groupe',
+      rename: 'Renommer', color: 'Couleur', noColor: 'Aucune couleur', deleteGroup: 'Supprimer le groupe (les dépôts reviennent dans Sans groupe)',
+      style: 'Style des groupes', showNative: 'Afficher aussi la liste d’origine de GitHub', dropNew: 'Déposez ici pour créer un groupe',
+      defaultName: 'Nouveau groupe',
+      styles: { card: 'Carte (par défaut)', band: 'Bandeau de titre', bold: 'Ailes' },
+      colors: { accent: 'Bleu', success: 'Vert', attention: 'Jaune', severe: 'Orange', danger: 'Rouge', done: 'Violet', sponsors: 'Rose' },
+    },
+    de: {
+      newGroup: 'Neue Gruppe', settings: 'Einstellungen',
+      unsaved: 'Einige Änderungen wurden nicht gespeichert und gehen beim Neuladen verloren.', retry: 'Erneut versuchen', discard: 'Änderungen verwerfen',
+      expand: 'Zum Aufklappen klicken', collapse: 'Zum Zuklappen klicken', groupOptions: 'Gruppenoptionen',
+      dropHere: 'Repositorys hierher ziehen', ungrouped: 'Ohne Gruppe', loadMore: 'Weitere Repositorys laden',
+      repoOptions: 'In Gruppe verschieben', groupName: 'Gruppenname', moveTo: 'In Gruppe verschieben',
+      newGroupMenu: '+ Neue Gruppe…', removeFrom: 'Aus Gruppe entfernen',
+      rename: 'Umbenennen', color: 'Farbe', noColor: 'Keine Farbe', deleteGroup: 'Gruppe löschen (Repositorys kommen zurück zu „Ohne Gruppe“)',
+      style: 'Gruppenstil', showNative: 'Auch die ursprüngliche GitHub-Liste anzeigen', dropNew: 'Hier ablegen, um eine Gruppe zu erstellen',
+      defaultName: 'Neue Gruppe',
+      styles: { card: 'Karte (Standard)', band: 'Titelband', bold: 'Flügel' },
+      colors: { accent: 'Blau', success: 'Grün', attention: 'Gelb', severe: 'Orange', danger: 'Rot', done: 'Lila', sponsors: 'Pink' },
+    },
+    pt_BR: {
+      newGroup: 'Novo grupo', settings: 'Configurações',
+      unsaved: 'Algumas alterações não foram salvas e serão perdidas se você recarregar a página.', retry: 'Tentar novamente', discard: 'Descartar alterações',
+      expand: 'Clique para expandir', collapse: 'Clique para recolher', groupOptions: 'Opções do grupo',
+      dropHere: 'Arraste repositórios para cá', ungrouped: 'Sem grupo', loadMore: 'Carregar mais repositórios',
+      repoOptions: 'Mover para um grupo', groupName: 'Nome do grupo', moveTo: 'Mover para um grupo',
+      newGroupMenu: '+ Novo grupo…', removeFrom: 'Remover do grupo',
+      rename: 'Renomear', color: 'Cor', noColor: 'Sem cor', deleteGroup: 'Excluir grupo (os repositórios voltam para Sem grupo)',
+      style: 'Estilo dos grupos', showNative: 'Mostrar também a lista original do GitHub', dropNew: 'Solte aqui para criar um grupo',
+      defaultName: 'Novo grupo',
+      styles: { card: 'Cartão (padrão)', band: 'Faixa de título', bold: 'Asas' },
+      colors: { accent: 'Azul', success: 'Verde', attention: 'Amarelo', severe: 'Laranja', danger: 'Vermelho', done: 'Roxo', sponsors: 'Rosa' },
+    },
+    ru: {
+      newGroup: 'Новая группа', settings: 'Настройки',
+      unsaved: 'Некоторые изменения не сохранены и пропадут после перезагрузки страницы.', retry: 'Повторить', discard: 'Отменить изменения',
+      expand: 'Нажмите, чтобы развернуть', collapse: 'Нажмите, чтобы свернуть', groupOptions: 'Параметры группы',
+      dropHere: 'Перетащите сюда репозитории', ungrouped: 'Без группы', loadMore: 'Загрузить ещё репозитории',
+      repoOptions: 'Переместить в группу', groupName: 'Название группы', moveTo: 'Переместить в группу',
+      newGroupMenu: '+ Новая группа…', removeFrom: 'Убрать из группы',
+      rename: 'Переименовать', color: 'Цвет', noColor: 'Без цвета', deleteGroup: 'Удалить группу (репозитории вернутся в «Без группы»)',
+      style: 'Стиль групп', showNative: 'Показывать также исходный список GitHub', dropNew: 'Отпустите здесь, чтобы создать группу',
+      defaultName: 'Новая группа',
+      styles: { card: 'Карточки (по умолчанию)', band: 'Полоса заголовка', bold: 'Крылья' },
+      colors: { accent: 'Синий', success: 'Зелёный', attention: 'Жёлтый', severe: 'Оранжевый', danger: 'Красный', done: 'Фиолетовый', sponsors: 'Розовый' },
+    },
   };
-  const T = /^zh/i.test(navigator.language || '') ? I18N.zh : I18N.en;
+
+  // 按浏览器的语言偏好挑第一个支持的语言：繁体（台湾、香港、澳门、Hant）单独处理，葡萄牙语用巴西版
+  function pickLang() {
+    const tags = [...(navigator.languages || []), navigator.language].filter(Boolean);
+    for (const tag of tags) {
+      const t = tag.toLowerCase();
+      if (t.startsWith('zh')) return /-(tw|hk|mo)(-|$)|hant/.test(t) ? 'zh_TW' : 'zh';
+      if (t.startsWith('pt')) return 'pt_BR';
+      const base = t.split('-')[0];
+      if (Object.prototype.hasOwnProperty.call(I18N, base)) return base;
+    }
+    return 'en';
+  }
+  const LANG_UI = pickLang();
+  // 某种语言缺条目时回退到英文
+  const T = {
+    ...I18N.en,
+    ...I18N[LANG_UI],
+    styles: { ...I18N.en.styles, ...I18N[LANG_UI].styles },
+    colors: { ...I18N.en.colors, ...I18N[LANG_UI].colors },
+  };
 
   // 重复注入（开发预览时）先拆掉旧实例
   if (typeof globalThis.__ghgTeardown === 'function') globalThis.__ghgTeardown();

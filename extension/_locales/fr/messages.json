@@ -1,0 +1,18 @@
+{
+  "extName": {
+    "message": "Repo Grouping for GitHub – Rangez vos dépôts en dossiers",
+    "description": "Full extension name shown in the Chrome Web Store (max 75 characters)."
+  },
+  "extShortName": {
+    "message": "Repo Grouping",
+    "description": "Short name for tight spaces."
+  },
+  "extDescription": {
+    "message": "Rangez les dépôts de la barre latérale de GitHub en dossiers et groupes. Glisser-déposer, sans connexion ni jeton, stockage local.",
+    "description": "Store summary (max 132 characters)."
+  },
+  "actionTitle": {
+    "message": "Repo Grouping – paramètres",
+    "description": "Tooltip of the toolbar button."
+  }
+}

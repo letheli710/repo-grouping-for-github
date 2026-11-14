@@ -6,7 +6,7 @@
 
 ![Repo Grouping for GitHub 演示：在 GitHub 首页侧边栏新建分组、把仓库拖进去、用菜单移动仓库、切换分组样式](docs/images/demo.gif)
 
-> 演示里的界面是英文。在中文浏览器里，扩展的按钮和菜单会自动显示中文。
+> 演示里的界面是英文。扩展会跟随浏览器语言，在中文浏览器里按钮和菜单会自动显示中文。
 
 GitHub 首页左侧的 **Top repositories** 是一条平铺的列表。仓库一多，就很难分清哪个是哪个，找起来也费劲。GitHub 本身不支持把仓库分组或放进文件夹，[社区从 2022 年就在提这个需求](https://github.com/orgs/community/discussions/41348)。
 
@@ -21,7 +21,7 @@ Repo Grouping for GitHub 是一个浏览器扩展，把这条列表变成**你�
 - **三种样式**：卡片（默认）、标题色带、长两翼。在工具栏弹出的设置面板，或侧边栏标题右边的设置按钮里切换。
 - **不需要登录、不要 token、不上传数据**：分组只保存在这台电脑的浏览器里，并且按 GitHub 账号分开存放。
 - **出问题时自动退回**：GitHub 改版或出错时，自动恢复 GitHub 原生列表。
-- **中英双语界面**，跟随浏览器语言。
+- **支持 10 种界面语言**，跟随浏览器语言：English、简体中文、繁體中文、日本語、한국어、Español、Français、Deutsch、Português (Brasil)、Русский。其他语言显示英文。
 
 ## 分组样式
 
@@ -134,7 +134,7 @@ Chrome 和其他 Chromium 内核浏览器（Edge、Brave、Arc、Opera）。暂�
 extension/        扩展本体（Manifest V3，原生 JavaScript，无依赖，无需构建）
   content.js      侧边栏分组、拖拽、存储
   popup.html/js   工具栏设置面板
-  _locales/       商店名称和描述（en、zh_CN）
+  _locales/       10 种语言的商店名称和描述
 scripts/
   audit-extension.cjs   在临时无头 Chrome 里跑自动检查
   record-demo.cjs       加载真实扩展，录制 docs/images/demo.gif 和截图
@@ -144,7 +144,7 @@ scripts/
 demo/
   dashboard.html        手写的备用仿 GitHub 首页（仓库都是虚构的）
   cursor-overlay.js     在录像里画出鼠标指针
-docs/                   市场调研、产品设计和安全审查（中文）
+docs/                   安全审查报告和每个问题的处理记录
 ```
 
 脚本需要 [Playwright](https://playwright.dev/)（用 `NODE_PATH` 指向装有它的 `node_modules`）、本机安装的 Chrome，录制动图还需要 `ffmpeg`：

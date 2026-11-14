@@ -19,7 +19,7 @@ Repo Grouping for GitHub is a browser extension that turns that sidebar list int
 - **Three styles.** *Card* (default), *Title band* and *Wings*. Switch in the toolbar popup or the sidebar's settings button.
 - **No login, no token, nothing uploaded.** Groups stay in your browser on your computer, kept separately for each GitHub account.
 - **Fails safe.** If GitHub changes its page or anything goes wrong, you get GitHub's original list back.
-- **English and Chinese UI**, following your browser language.
+- **10 languages**, following your browser language: English, 简体中文, 繁體中文, 日本語, 한국어, Español, Français, Deutsch, Português (Brasil), Русский. Other languages fall back to English.
 
 ## Group styles
 
@@ -132,7 +132,7 @@ Ideas and bug reports are welcome in [Issues](https://github.com/letheli710/repo
 extension/        the extension itself (Manifest V3, plain JavaScript, no dependencies, no build step)
   content.js      sidebar groups, drag & drop, storage
   popup.html/js   toolbar settings popup
-  _locales/       store name and description (en, zh_CN)
+  _locales/       store name and description in 10 languages
 scripts/
   audit-extension.cjs   automated checks in a temporary headless Chrome
   record-demo.cjs       records docs/images/demo.gif and screenshots with the real extension
@@ -142,7 +142,7 @@ scripts/
 demo/
   dashboard.html        hand-made fallback mock of the GitHub home page (fictional repos)
   cursor-overlay.js     draws the mouse pointer in recordings
-docs/                   market research, design notes and security audit (Chinese)
+docs/                   security audit and how each finding was fixed (Chinese)
 ```
 
 The scripts need [Playwright](https://playwright.dev/) (point `NODE_PATH` at a `node_modules` that has it), an installed Chrome, and `ffmpeg` for the demo GIF:

@@ -1,0 +1,18 @@
+{
+  "extName": {
+    "message": "Repo Grouping for GitHub – 사이드바 저장소를 폴더로 정리",
+    "description": "Full extension name shown in the Chrome Web Store (max 75 characters)."
+  },
+  "extShortName": {
+    "message": "Repo Grouping",
+    "description": "Short name for tight spaces."
+  },
+  "extDescription": {
+    "message": "GitHub 사이드바의 저장소를 폴더와 그룹으로 정리하세요. 드래그 앤 드롭, 로그인·토큰 불필요, 데이터는 로컬에만 저장됩니다.",
+    "description": "Store summary (max 132 characters)."
+  },
+  "actionTitle": {
+    "message": "Repo Grouping – 설정",
+    "description": "Tooltip of the toolbar button."
+  }
+}

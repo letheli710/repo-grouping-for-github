@@ -1,0 +1,18 @@
+{
+  "extName": {
+    "message": "Repo Grouping for GitHub – Repos in der Seitenleiste in Ordner sortieren",
+    "description": "Full extension name shown in the Chrome Web Store (max 75 characters)."
+  },
+  "extShortName": {
+    "message": "Repo Grouping",
+    "description": "Short name for tight spaces."
+  },
+  "extDescription": {
+    "message": "Ordnen Sie die Repositorys der GitHub-Seitenleiste in Ordner und Gruppen. Drag & Drop, ohne Login und Token, lokal gespeichert.",
+    "description": "Store summary (max 132 characters)."
+  },
+  "actionTitle": {
+    "message": "Repo Grouping – Einstellungen",
+    "description": "Tooltip of the toolbar button."
+  }
+}

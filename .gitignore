@@ -4,3 +4,6 @@
 # 发布用的压缩包
 dist/
 node_modules/
+.claude/settings.local.json
+# 本地工作笔记（市场调研、产品设计草案），不公开
+notes/
