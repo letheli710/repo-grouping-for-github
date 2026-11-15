@@ -179,14 +179,24 @@
     }
     return 'en';
   }
-  const LANG_UI = pickLang();
-  // 某种语言缺条目时回退到英文
-  const T = {
-    ...I18N.en,
-    ...I18N[LANG_UI],
-    styles: { ...I18N.en.styles, ...I18N[LANG_UI].styles },
-    colors: { ...I18N.en.colors, ...I18N[LANG_UI].colors },
-  };
+  // 设置里的 lang：'auto' 跟随浏览器，或者用户在设置面板里手动选的语言
+  const LANGS = Object.keys(I18N);
+  const HTML_LANG = { zh: 'zh-CN', zh_TW: 'zh-TW', pt_BR: 'pt-BR' };
+  let T = null;
+  let langUI = '';
+  function applyLang(choice) {
+    const lang = LANGS.includes(choice) ? choice : pickLang();
+    if (lang === langUI) return;
+    langUI = lang;
+    // 某种语言缺条目时回退到英文
+    T = {
+      ...I18N.en,
+      ...I18N[lang],
+      styles: { ...I18N.en.styles, ...I18N[lang].styles },
+      colors: { ...I18N.en.colors, ...I18N[lang].colors },
+    };
+  }
+  applyLang('auto');
 
   // 重复注入（开发预览时）先拆掉旧实例
   if (typeof globalThis.__ghgTeardown === 'function') globalThis.__ghgTeardown();
@@ -216,6 +226,7 @@
       // 不认识的样式（包括原型阶段删掉的 subtle / tabs）一律回到默认
       style: STYLES.includes(r.style) ? r.style : DEFAULT_STYLE,
       showNative: r.showNative === true,
+      lang: LANGS.includes(r.lang) ? r.lang : 'auto',
     };
   }
 
@@ -578,6 +589,9 @@
     const grouped = new Set(doc.groups.flatMap((g) => g.repos));
     const ungrouped = nativeOrder.filter((r) => !grouped.has(r));
     closeMenu();
+    // 每次重绘都按当前设置取语言，设置面板里改了语言，已打开的页面会立即切换
+    applyLang(settings.lang);
+    wrap.lang = HTML_LANG[langUI] || langUI;
     wrap.className = 'wrap style-' + settings.style;
     // replaceChildren 不会展开数组，这里先 flat
     wrap.replaceChildren(...[

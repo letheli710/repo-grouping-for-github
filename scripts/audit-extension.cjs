@@ -345,6 +345,38 @@ function info(name, observed) {
     check('Two quick popup setting changes preserve both values', 'style=band and showNative=true', { style: rapidSettings.style, showNative: rapidSettings.showNative },
       rapidSettings.style === 'band' && rapidSettings.showNative === true);
 
+    // Manual UI language: chosen in the popup, applied live to the open GitHub tab, kept with other settings.
+    const newGroupTitle = () => page.evaluate(() =>
+      document.querySelector('#ghg-root').shadowRoot.querySelector('[data-act="new-group"]').title);
+    const pickPopupLang = (v) => popup.evaluate((v) => {
+      const sel = document.querySelector('#lang');
+      sel.value = v; sel.dispatchEvent(new Event('change', { bubbles: true }));
+    }, v);
+    await pickPopupLang('ja');
+    await page.waitForTimeout(300);
+    const langJa = {
+      stored: await saved(),
+      pageTitle: await newGroupTitle(),
+      popupLang: await popup.evaluate(() => document.documentElement.lang),
+      popupHeading: await popup.evaluate(() => document.querySelector('h2[data-i18n="style"]').textContent),
+    };
+    await popup.reload();
+    await popup.locator('#lang').waitFor();
+    const langAfterReload = await popup.evaluate(() => ({ sel: document.querySelector('#lang').value, lang: document.documentElement.lang }));
+    await pickPopupLang('auto');
+    await page.waitForTimeout(300);
+    const langAuto = { stored: (await saved()).lang, pageTitle: await newGroupTitle() };
+    await save({ ...base(), style: 'card', showNative: false });
+    await popup.evaluate((k) => chrome.storage.local.set({ [k]: { style: 'card', showNative: false, lang: '<img src=x>' } }), SETTINGS_KEY);
+    await page.waitForTimeout(300);
+    const langBogus = await newGroupTitle();
+    check('Manual interface language from the popup', 'Japanese applied live to page and popup, kept after reopening, other settings kept; "auto" and unknown values fall back to the browser language',
+      { langJa, langAfterReload, langAuto, langBogus },
+      langJa.stored.lang === 'ja' && langJa.stored.style === 'band' && langJa.stored.showNative === true &&
+      langJa.pageTitle === '新しいグループ' && langJa.popupLang === 'ja' && langJa.popupHeading === 'グループのスタイル' &&
+      langAfterReload.sel === 'ja' && langAfterReload.lang === 'ja' &&
+      langAuto.stored === 'auto' && langAuto.pageTitle === 'New group' && langBogus === 'New group');
+
     // Find the real extension's isolated execution context for fault injection.
     // This changes only this test page, not product files or the browser profile.
     await mount();
@@ -377,7 +409,7 @@ function info(name, observed) {
     for (const f of ['manifest.json', 'content.js', 'popup.html', 'popup.js']) {
       hashes[f] = crypto.createHash('sha256').update(await fs.readFile(path.join(root, 'extension', f))).digest('hex');
     }
-    const output = { date: '2026-11-12', browser: version, extensionVersion: '1.1.0', extensionId, hashes,
+    const output = { date: '2026-11-14', browser: version, extensionVersion: '1.2.0', extensionId, hashes,
       method: 'Real MV3 extension in isolated temporary headless Chrome; all HTTP(S) fulfilled locally; synthetic GitHub dashboard DOM; native tabs.setZoom.',
       limitation: 'Does not assert current live GitHub DOM, responsive breakpoints, account enforcement, or real multi-page Show more behavior.',
       results, errors, matrix, requests };

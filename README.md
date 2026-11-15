@@ -19,7 +19,7 @@ Repo Grouping for GitHub is a browser extension that turns that sidebar list int
 - **Three styles.** *Card* (default), *Title band* and *Wings*. Switch in the toolbar popup or the sidebar's settings button.
 - **No login, no token, nothing uploaded.** Groups stay in your browser on your computer, kept separately for each GitHub account.
 - **Fails safe.** If GitHub changes its page or anything goes wrong, you get GitHub's original list back.
-- **10 languages**, following your browser language: English, 简体中文, 繁體中文, 日本語, 한국어, Español, Français, Deutsch, Português (Brasil), Русский. Other languages fall back to English.
+- **10 languages**: English, 简体中文, 繁體中文, 日本語, 한국어, Español, Français, Deutsch, Português (Brasil), Русский. It follows your browser language by default (others fall back to English), or pick one in the toolbar settings panel.
 
 ## Group styles
 
@@ -47,6 +47,7 @@ Repo Grouping for GitHub is a browser extension that turns that sidebar list int
 | Collapse / expand | Click the group's title |
 | Rename, color, delete | Hover the group's title → **⋯** |
 | Change style | Click the extension's toolbar icon, or the settings button next to *Top repositories* |
+| Change language | Click the extension's toolbar icon → *Language* |
 | See GitHub's original list | Settings → *Also show GitHub's original list*, or disable the extension |
 
 ## Privacy & security

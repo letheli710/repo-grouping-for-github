@@ -1,5 +1,5 @@
 // Repo Grouping for GitHub — 设置面板
-// 只读写 chrome.storage.local 里的设置（样式、是否显示原生列表），不碰任何账号的分组数据。
+// 只读写 chrome.storage.local 里的设置（样式、是否显示原生列表、界面语言），不碰任何账号的分组数据。
 // 内容脚本监听变化，已打开的 GitHub 页面会立即更新。同样不发任何网络请求。
 (() => {
   'use strict';
@@ -20,6 +20,7 @@
       safeTitle: '🔒 No login · Nothing uploaded',
       safeBody: 'Groups are kept per GitHub account, only in this browser on this computer, and are never sent to the developer or any third-party server. The "read and change your data on github.com" prompt at install time is what lets the extension show groups in the home page sidebar.',
       saved: 'Saved', saveFailed: 'Save failed, please try again', readFailed: 'Could not read settings',
+      language: 'Language', auto: 'Follow browser',
     },
     zh: {
       style: '分组样式', card: '卡片', default: '（默认）', cardDesc: '每组一张卡片，边界最清楚',
@@ -29,6 +30,7 @@
       safeTitle: '🔒 不需要登录 · 不上传任何数据',
       safeBody: '分组按 GitHub 账号分开，只保存在这台电脑的浏览器里，不会发给开发者或任何第三方服务器。安装时 Chrome 提示的「读取和更改 github.com 上的数据」，是为了在首页侧边栏里显示分组。',
       saved: '已保存', saveFailed: '保存失败，请重试', readFailed: '读取设置失败',
+      language: '界面语言', auto: '跟随浏览器',
     },
     zh_TW: {
       style: '群組樣式', card: '卡片', default: '（預設）', cardDesc: '每組一張卡片，邊界最清楚',
@@ -38,6 +40,7 @@
       safeTitle: '🔒 不需要登入 · 不上傳任何資料',
       safeBody: '群組按 GitHub 帳號分開，只儲存在這台電腦的瀏覽器裡，不會傳給開發者或任何第三方伺服器。安裝時 Chrome 提示的「讀取和變更 github.com 上的資料」，是為了在首頁側邊欄顯示群組。',
       saved: '已儲存', saveFailed: '儲存失敗，請重試', readFailed: '讀取設定失敗',
+      language: '介面語言', auto: '跟隨瀏覽器',
     },
     ja: {
       style: 'グループのスタイル', card: 'カード', default: '（デフォルト）', cardDesc: 'グループごとにカード表示、境界がいちばん明確',
@@ -47,6 +50,7 @@
       safeTitle: '🔒 ログイン不要 · データ送信なし',
       safeBody: 'グループは GitHub アカウントごとに、このパソコンのブラウザ内だけに保存され、開発者や第三者のサーバーに送信されることはありません。インストール時に表示される「github.com 上のデータの読み取りと変更」は、ホームのサイドバーにグループを表示するために必要な権限です。',
       saved: '保存しました', saveFailed: '保存できませんでした。もう一度お試しください', readFailed: '設定を読み込めませんでした',
+      language: '表示言語', auto: 'ブラウザに合わせる',
     },
     ko: {
       style: '그룹 스타일', card: '카드', default: '(기본)', cardDesc: '그룹마다 카드 하나, 경계가 가장 분명함',
@@ -56,6 +60,7 @@
       safeTitle: '🔒 로그인 불필요 · 업로드 없음',
       safeBody: '그룹은 GitHub 계정별로 이 컴퓨터의 브라우저에만 저장되며, 개발자나 제3자 서버로 전송되지 않습니다. 설치할 때 표시되는 "github.com의 데이터 읽기 및 변경" 권한은 홈 사이드바에 그룹을 표시하는 데 필요합니다.',
       saved: '저장됨', saveFailed: '저장하지 못했습니다. 다시 시도해 주세요', readFailed: '설정을 읽지 못했습니다',
+      language: '표시 언어', auto: '브라우저 설정 따르기',
     },
     es: {
       style: 'Estilo de los grupos', card: 'Tarjeta', default: '(predeterminado)', cardDesc: 'Una tarjeta por grupo, bordes más claros',
@@ -65,6 +70,7 @@
       safeTitle: '🔒 Sin iniciar sesión · No se sube nada',
       safeBody: 'Los grupos se guardan por cuenta de GitHub, solo en este navegador de este ordenador, y nunca se envían al desarrollador ni a servidores de terceros. El aviso «leer y cambiar tus datos en github.com» al instalar es lo que permite mostrar los grupos en la barra lateral de la página de inicio.',
       saved: 'Guardado', saveFailed: 'No se pudo guardar; inténtalo de nuevo', readFailed: 'No se pudieron leer los ajustes',
+      language: 'Idioma', auto: 'Igual que el navegador',
     },
     fr: {
       style: 'Style des groupes', card: 'Carte', default: '(par défaut)', cardDesc: 'Une carte par groupe, contours les plus nets',
@@ -74,6 +80,7 @@
       safeTitle: '🔒 Sans connexion · Rien n’est envoyé',
       safeBody: 'Les groupes sont enregistrés par compte GitHub, uniquement dans ce navigateur sur cet ordinateur, et ne sont jamais envoyés au développeur ni à un serveur tiers. L’avertissement « lire et modifier vos données sur github.com » à l’installation permet d’afficher les groupes dans la barre latérale de la page d’accueil.',
       saved: 'Enregistré', saveFailed: 'Échec de l’enregistrement, réessayez', readFailed: 'Impossible de lire les paramètres',
+      language: 'Langue', auto: 'Comme le navigateur',
     },
     de: {
       style: 'Gruppenstil', card: 'Karte', default: '(Standard)', cardDesc: 'Eine Karte pro Gruppe, klarste Ränder',
@@ -83,6 +90,7 @@
       safeTitle: '🔒 Kein Login · Nichts wird hochgeladen',
       safeBody: 'Gruppen werden pro GitHub-Konto nur in diesem Browser auf diesem Computer gespeichert und nie an den Entwickler oder Server Dritter gesendet. Der Hinweis „Ihre Daten auf github.com lesen und ändern“ bei der Installation ermöglicht es, Gruppen in der Seitenleiste der Startseite anzuzeigen.',
       saved: 'Gespeichert', saveFailed: 'Speichern fehlgeschlagen, bitte erneut versuchen', readFailed: 'Einstellungen konnten nicht gelesen werden',
+      language: 'Sprache', auto: 'Wie im Browser',
     },
     pt_BR: {
       style: 'Estilo dos grupos', card: 'Cartão', default: '(padrão)', cardDesc: 'Um cartão por grupo, bordas mais claras',
@@ -92,6 +100,7 @@
       safeTitle: '🔒 Sem login · Nada é enviado',
       safeBody: 'Os grupos ficam salvos por conta do GitHub, só neste navegador e neste computador, e nunca são enviados ao desenvolvedor nem a servidores de terceiros. O aviso "ler e alterar seus dados em github.com" na instalação é o que permite mostrar os grupos na barra lateral da página inicial.',
       saved: 'Salvo', saveFailed: 'Falha ao salvar, tente novamente', readFailed: 'Não foi possível ler as configurações',
+      language: 'Idioma', auto: 'Igual ao navegador',
     },
     ru: {
       style: 'Стиль групп', card: 'Карточки', default: '(по умолчанию)', cardDesc: 'Каждая группа — отдельная карточка, самые чёткие границы',
@@ -101,6 +110,7 @@
       safeTitle: '🔒 Без входа · Ничего не отправляется',
       safeBody: 'Группы хранятся отдельно для каждого аккаунта GitHub, только в этом браузере на этом компьютере, и никогда не отправляются разработчику или сторонним серверам. Предупреждение «Просмотр и изменение ваших данных на github.com» при установке нужно, чтобы показывать группы на боковой панели главной страницы.',
       saved: 'Сохранено', saveFailed: 'Не удалось сохранить, попробуйте ещё раз', readFailed: 'Не удалось прочитать настройки',
+      language: 'Язык', auto: 'Как в браузере',
     },
   };
   // 和 content.js 用同一套规则选语言
@@ -115,17 +125,24 @@
     }
     return 'en';
   }
-  const LANG_UI = pickLang();
-  const T = { ...I18N.en, ...I18N[LANG_UI] };
-  document.documentElement.lang = { zh: 'zh-CN', zh_TW: 'zh-TW', pt_BR: 'pt-BR' }[LANG_UI] || LANG_UI;
-  for (const el of document.querySelectorAll('[data-i18n]')) {
-    const v = T[el.dataset.i18n];
-    if (v) el.textContent = v;
+  // 用户可以在面板里手动选语言；'auto' 表示跟随浏览器
+  const LANGS = Object.keys(I18N);
+  const HTML_LANG = { zh: 'zh-CN', zh_TW: 'zh-TW', pt_BR: 'pt-BR' };
+  let T = I18N.en;
+  function applyLang(choice) {
+    const lang = LANGS.includes(choice) ? choice : pickLang();
+    T = { ...I18N.en, ...I18N[lang] };
+    document.documentElement.lang = HTML_LANG[lang] || lang;
+    for (const el of document.querySelectorAll('[data-i18n]')) {
+      const v = T[el.dataset.i18n];
+      if (v) el.textContent = v;
+    }
+    for (const el of document.querySelectorAll('[data-i18n-aria]')) {
+      const v = T[el.dataset.i18nAria];
+      if (v) el.setAttribute('aria-label', v);
+    }
   }
-  for (const el of document.querySelectorAll('[data-i18n-aria]')) {
-    const v = T[el.dataset.i18nAria];
-    if (v) el.setAttribute('aria-label', v);
-  }
+  applyLang('auto');
 
   // 直接打开 popup.html 预览时没有 chrome.storage，退回到内存
   const area = globalThis.chrome?.storage?.local;
@@ -137,7 +154,11 @@
 
   const sanitize = (raw) => {
     const r = raw && typeof raw === 'object' ? raw : {};
-    return { style: STYLES.includes(r.style) ? r.style : DEFAULT_STYLE, showNative: r.showNative === true };
+    return {
+      style: STYLES.includes(r.style) ? r.style : DEFAULT_STYLE,
+      showNative: r.showNative === true,
+      lang: LANGS.includes(r.lang) ? r.lang : 'auto',
+    };
   };
 
   const savedEl = document.getElementById('saved');
@@ -174,6 +195,14 @@
       console.warn('[Repo Grouping] Could not read settings:', e);
       flash(T.readFailed);
     }
+    if (current.lang !== 'auto') applyLang(current.lang);
+    const langSel = document.getElementById('lang');
+    langSel.value = current.lang;
+    langSel.addEventListener('change', () => {
+      const v = langSel.value === 'auto' || LANGS.includes(langSel.value) ? langSel.value : 'auto';
+      applyLang(v);
+      update({ lang: v });
+    });
     for (const r of document.querySelectorAll('input[name="style"]')) {
       r.checked = r.value === current.style;
       r.addEventListener('change', () => { if (r.checked && STYLES.includes(r.value)) update({ style: r.value }); });

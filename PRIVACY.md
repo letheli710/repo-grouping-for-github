@@ -10,7 +10,7 @@ To show your groups, the extension stores the following **only in your browser's
 
 - Group names, colors, order and whether each group is collapsed
 - The `owner/repo` names of repositories you put in groups
-- Your settings (group style, whether to also show GitHub's original list)
+- Your settings (group style, whether to also show GitHub's original list, interface language)
 
 Groups are kept separately for each GitHub account, keyed by the login name shown on the GitHub page.
 
@@ -47,7 +47,7 @@ Questions or concerns: please open an issue at <https://github.com/letheli710/re
 
 - 分组名、颜色、顺序和是否折叠
 - 你放进分组的仓库名（`owner/repo`）
-- 你的设置（分组样式、是否同时显示 GitHub 原生列表）
+- 你的设置（分组样式、是否同时显示 GitHub 原生列表、界面语言）
 
 分组按 GitHub 账号分开存放，以页面上显示的登录名区分。
 
